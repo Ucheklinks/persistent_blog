@@ -1,0 +1,32 @@
+{
+  "name": "persistent_blog",
+  "version": "1.0.0",
+  "description": "blog with persistent data",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "build": "npx @tailwindcss/cli -i ./public/styling/input.css -o ./public/styling/output.css --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ucheklinks/persistent_blog.git"
+  },
+  "author": "Uchechukwu Makuochukwu Unachukwu",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ucheklinks/persistent_blog/issues"
+  },
+  "homepage": "https://github.com/Ucheklinks/persistent_blog#readme",
+  "dependencies": {
+    "@tailwindcss/cli": "^4.1.5",
+    "body-parser": "^2.2.0",
+    "dotenv": "^16.5.0",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "pg": "^8.15.6",
+    "tailwindcss": "^4.1.5"
+  }
+}
