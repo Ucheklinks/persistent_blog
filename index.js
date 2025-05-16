@@ -5,6 +5,7 @@ import env from "dotenv";
 import passport from "passport";
 import GoogleStrategy from "passport-google-oauth2";
 import session from "express-session";
+import flowbite from "flowbite";
 
 env.config();
 

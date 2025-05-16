@@ -1,1 +1,6 @@
-@import "tailwindcss";
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+/* Optional: if you want to use Flowbite's base styles */
+@import "flowbite";
