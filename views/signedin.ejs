@@ -19,18 +19,20 @@
           <p>Klinks's Blog</p>
         </div>
 
-        <a href="/" class=" ">home</a>
-        <a href="/contact" class="mx-7">contact us</a>
-        <a href="/about">about me</a>
+        <div class="lg:flex justify-evenly hidden">
+          <a href="/" class="mx-20">home</a>
+          <a href="/contact" class="mx-20">contact us</a>
+          <a href="/about" class="mx-20">about me</a>
+        </div>
 
         <div class="flex justify-center">
           <% if (locals.text) {%>
-          <a href="/logout" class="flex items-center %>">
+          <a href="/logout" class="flex items-center hidden %>">
             <button class="mr-7 ml-1">logout</button>
           </a>
 
           <%}else{%>
-          <a href="/auth/google" class="flex items-center">
+          <a href="/auth/google" class="flex items-center hidden">
             <img
               src="images/googlelogo.svg"
               class="h-4 w-4 self-center"
@@ -44,13 +46,62 @@
           <input
             type="text"
             placeholder="Search"
-            class="bg-gray-200 text-center"
+            class="bg-gray-200 text-center "
           />
           <button
-            class="flex items-center bg-gray-600 text-white px-1 justify-center rounded-r-lg"
+            class="flex items-center bg-gray-600 text-white px-1 justify-center rounded-r-lg "
           >
             go
           </button>
+        </div>
+
+        <button id="menu_btn" class="w-10 lg:hidden">
+          <svg
+            id="menu_bars"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            class="bi bi-list"
+            viewBox="0 0 16 16"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"
+            />
+          </svg>
+
+          <svg
+            id="menu_close"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            class="bi bi-x hidden"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"
+            />
+          </svg>
+        </button>
+
+        <div
+          id="mobile_menu"
+          class="sm:hidden flex justify-center mt-5 h-dvh text-5xl"
+        >
+          <ul class="">
+            <a href="/"> <li class="my-7">home</li></a>
+            <a href="/contact"> <li class="my-7">contact us</li></a>
+            <a href="/about"> <li class="my-7">about me</li></a>
+            <a href="/auth/google"> <li class="my-7">sign in</li></a>
+            <input
+              type="text"
+              placeholder="Search"
+              class="bg-gray-200 text-center"
+            />
+            <button
+              class="flex items-center bg-gray-600 text-white px-1 justify-center rounded-r-lg"
+            >
+              go
+            </button>
+          </ul>
         </div>
       </nav>
     </header>
@@ -114,9 +165,19 @@
       </div>
     </div>
     <%- include("partials/footer.ejs") %>
+    <script>
+      const menu_btn = document.getElementById("menu_btn");
+      const mobile_menu = document.getElementById("mobile_menu");
+      const menu_bars = document.getElementById("menu_bars");
+      const menu_close = document.getElementById("menu_close");
+
+      menu_btn.addEventListener("click", () => {
+        mobile_menu.classList.toggle("hidden");
+        menu_bars.classList.toggle("hidden");
+        menu_close.classList.toggle("hidden");
+      });
+    </script>
   </body>
-
-
 </html>
 
 <!-- 
