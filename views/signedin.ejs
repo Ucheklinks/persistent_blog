@@ -1,110 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Homepage</title>
-    <link href="./styling/output.css" rel="stylesheet" />
-    <style>
-      @font-face {
-        font-family: sigurdKnight;
-        src: url("font/sigurd/Sigurd-Knight.otf");
-      }
-    </style>
-  </head>
-  <body style="font-family: sigurdKnight" class="text-2xl flex flex-col h-dvh">
-    <header class="border-b-1 border-gray-200 py-6">
-      <nav class="text-gray-600 flex justify-around tracking-wider">
-        <div>
-          <p>Klinks's Blog</p>
-        </div>
-
-        <div class="lg:flex justify-evenly hidden">
-          <a href="/" class="mx-20">home</a>
-          <a href="/contact" class="mx-20">contact us</a>
-          <a href="/about" class="mx-20">about me</a>
-        </div>
-
-        <div class="flex justify-center">
-          <% if (locals.text) {%>
-          <a href="/logout" class="flex items-center hidden %>">
-            <button class="mr-7 ml-1">logout</button>
-          </a>
-
-          <%}else{%>
-          <a href="/auth/google" class="flex items-center hidden">
-            <img
-              src="images/googlelogo.svg"
-              class="h-4 w-4 self-center"
-              alt="google logo"
-            />
-            <p class="mr-7 ml-1">sign in</p>
-          </a>
-
-          <%}%>
-
-          <input
-            type="text"
-            placeholder="Search"
-            class="bg-gray-200 text-center "
-          />
-          <button
-            class="flex items-center bg-gray-600 text-white px-1 justify-center rounded-r-lg "
-          >
-            go
-          </button>
-        </div>
-
-        <button id="menu_btn" class="w-10 lg:hidden">
-          <svg
-            id="menu_bars"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor"
-            class="bi bi-list"
-            viewBox="0 0 16 16"
-          >
-            <path
-              fill-rule="evenodd"
-              d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"
-            />
-          </svg>
-
-          <svg
-            id="menu_close"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor"
-            class="bi bi-x hidden"
-            viewBox="0 0 16 16"
-          >
-            <path
-              d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"
-            />
-          </svg>
-        </button>
-
-        <div
-          id="mobile_menu"
-          class="sm:hidden flex justify-center mt-5 h-dvh text-5xl"
-        >
-          <ul class="">
-            <a href="/"> <li class="my-7">home</li></a>
-            <a href="/contact"> <li class="my-7">contact us</li></a>
-            <a href="/about"> <li class="my-7">about me</li></a>
-            <a href="/auth/google"> <li class="my-7">sign in</li></a>
-            <input
-              type="text"
-              placeholder="Search"
-              class="bg-gray-200 text-center"
-            />
-            <button
-              class="flex items-center bg-gray-600 text-white px-1 justify-center rounded-r-lg"
-            >
-              go
-            </button>
-          </ul>
-        </div>
-      </nav>
-    </header>
+<%- include("partials/header.ejs") %>
 
     <div class="mt-15 tracking-wider">
       <h1
@@ -114,7 +8,7 @@
       </h1>
     </div>
 
-    <div class="grid lg:grid-cols-3 lg:px-5 gap-6">
+    <div class="grid lg:grid-cols-3 lg:px-5 gap-6 px-6">
       <div
         class="border-1 rounded-3xl border-gray-200 flex flex-col items-center h-[450px]"
       >

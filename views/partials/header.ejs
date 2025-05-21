@@ -12,8 +12,11 @@
       }
     </style>
   </head>
-  <body style="font-family: sigurdKnight" class="text-2xl flex flex-col h-dvh">
-    <header class="border-b-1 border-gray-200 py-6">
+  <body
+    style="font-family: sigurdKnight"
+    class="text-2xl flex flex-col min-h-screen"
+  >
+    <header class="border-b-1 border-gray-200 py-6 sticky top-0">
       <nav
         class="text-gray-600 flex flex-wrap justify-between px-4 lg:justify-around tracking-wider lg:flex items-center"
       >
@@ -28,6 +31,10 @@
         </div>
 
         <div class="lg:flex justify-center hidden">
+          <% if (locals.text){%>
+          <a href="/logout" class="mr-7 ml-1">logout</a>
+
+          <%}else{%>
           <a href="/auth/google" class="flex items-center">
             <img
               src="images/googlelogo.svg"
@@ -36,6 +43,8 @@
             />
             <p class="mr-7 ml-1">sign in</p>
           </a>
+
+          <%}%>
 
           <input
             type="text"
@@ -49,44 +58,67 @@
           </button>
         </div>
 
-       
-          <button id="menu_btn" class="w-10 lg:hidden">
-            <svg
-              id="menu_bars"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              class="bi bi-list"
-              viewBox="0 0 16 16"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"
-              />
-            </svg>
+        <button id="menu_btn" class="w-10 lg:hidden">
+          <svg
+            id="menu_bars"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            class="bi bi-list"
+            viewBox="0 0 16 16"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z"
+            />
+          </svg>
 
-            <svg
-              id="menu_close"
-              xmlns="http://www.w3.org/2000/svg"
-              fill="currentColor"
-              class="bi bi-x hidden"
-              viewBox="0 0 16 16"
-            >
-              <path
-                d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"
-              />
-            </svg>
-          </button>
-      
+          <svg
+            id="menu_close"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            class="bi bi-x hidden"
+            viewBox="0 0 16 16"
+          >
+            <path
+              d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"
+            />
+          </svg>
+        </button>
       </nav>
       <div
         id="mobile_menu"
-        class="hidden flex justify-center  mt-5 h-dvh text-5xl"
+        class="hidden flex flex-col text-5xl m-auto mt-20 px-6"
       >
-        <ul class="">
-          <a href="/"> <li class="my-7">home</li></a>
-          <a href="/contact"> <li class="my-7">contact us</li></a>
-          <a href="/about"> <li class="my-7">about me</li></a>
-          <a href="/auth/google"> <li class="my-7">sign in</li></a>
+        <ul class="flex flex-col justify-center">
+          <a href="/" class="m-auto"> <li class="my-7">home</li></a>
+          <a href="/contact" class="m-auto">
+            <li class="my-7">contact us</li></a
+          >
+          <a href="/about" class="m-auto"> <li class="my-7">about me</li></a>
+
+          <% if (locals.text) {%>
+
+          <a href="/auth/google" class="m-auto">
+            <li class="my-7">logout</li></a
+          >
+          <%}else{%>
+          <a href="/auth/google" class="m-auto">
+            <li class="my-7">sign in</li></a
+          >
+          <%}%>
+
+          <a href="" class="flex flex-col m-auto mt-5">
+            <input
+              type="text"
+              placeholder="search"
+              class="bg-gray-200 text-center m-auto w-[340px] md:w-[600px]"
+            />
+            <button
+              class="bg-black text-white justify-center rounded px-3 pb-2 m-auto mt-10"
+            >
+              go
+            </button></a
+          >
         </ul>
       </div>
     </header>
@@ -98,6 +130,7 @@
 
       menu_btn.addEventListener("click", () => {
         mobile_menu.classList.toggle("hidden");
+        mobile_menu.classList.toggle("sticky");
         menu_bars.classList.toggle("hidden");
         menu_close.classList.toggle("hidden");
       });

@@ -30,7 +30,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      maxAge: 1000 * 5, // 5 minutes
+      maxAge: 1000 * 60 * 5, // 5 minutes
     },
   })
 );
@@ -39,22 +39,29 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.get("/", (req, res) => {
-  res.render("index.ejs");
+  if (req.isAuthenticated()) {
+    res.render("signedin.ejs", { text: "hidden" });
+  } else {
+    res.render("index.ejs");
+  }
 });
-
 
 app.get("/about", (req, res) => {
-  res.render("about.ejs");
+  if (req.isAuthenticated()) {
+    res.render("about.ejs", { text: "hidden" });
+  } else {
+    res.render("about.ejs");
+  }
 });
 
-
-app.get("/submit", (req, res) => {
-
-});
-
+app.get("/submit", (req, res) => {});
 
 app.get("/contact", (req, res) => {
-  res.render("contact.ejs");
+  if (req.isAuthenticated()) {
+    res.render("contact.ejs", { text: "hidden" });
+  } else {
+    res.render("contact.ejs");
+  }
 });
 
 app.get(
@@ -100,7 +107,7 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, cb) => {
       try {
-        console.log(profile);
+        // console.log(profile);
         const result = await db.query("SELECT * FROM users WHERE email = $1", [
           profile.email,
         ]);
