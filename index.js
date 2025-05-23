@@ -24,13 +24,18 @@ db.connect();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
+let blog_title;
+let date;
+let likes;
+let views;
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
-      maxAge: 1000 * 60 * 60, // 1 hour
+      maxAge: 1000 * 60 * 60 * 24, // 24 hours
     },
   })
 );
@@ -40,6 +45,10 @@ app.use(passport.session());
 
 app.get("/", (req, res) => {
   if (req.isAuthenticated()) {
+    blog_title = "";
+    date = "";
+    likes = "";
+    views = "";
     res.render("signedin.ejs", { text: "hidden" });
   } else {
     res.render("index.ejs");
@@ -54,10 +63,28 @@ app.get("/about", (req, res) => {
   }
 });
 
-app.post("/submitblog", (req, res) => {
+app.post("/submitblog", async (req, res) => {
+  let blogPost = req.body;
+  console.log(blogPost);
+
+  const d = new Date();
   if (req.isAuthenticated()) {
-    console.log(req.body);
-  } 
+    let user = req.user;
+
+    //     INSERT INTO table_name (column1, column2, column3, ...)
+    // VALUES (value1, value2, value3, ...);
+
+    try {
+     
+      
+
+      console.log(result.rows);
+    } catch (err) {
+      return err;
+    }
+  } else {
+    res.redirect("/");
+  }
 });
 
 app.get("/contact", (req, res) => {
@@ -72,7 +99,7 @@ app.get("/addnew", (req, res) => {
   if (req.isAuthenticated()) {
     res.render("addnew.ejs", { text: "hidden" });
   } else {
-    res.render("index.ejs");
+    res.redirect("/");
   }
 });
 
@@ -95,6 +122,8 @@ app.get(
 app.get("/signedin", (req, res) => {
   if (req.isAuthenticated()) {
     res.render("signedin.ejs", { text: "hidden" });
+  } else {
+    res.redirect("/");
   }
 });
 
