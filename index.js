@@ -30,7 +30,7 @@ app.use(
     resave: false,
     saveUninitialized: false,
     cookie: {
-      maxAge: 1000 * 60 * 5, // 5 minutes
+      maxAge: 1000 * 60 * 60, // 1 hour
     },
   })
 );
@@ -54,13 +54,25 @@ app.get("/about", (req, res) => {
   }
 });
 
-app.get("/submit", (req, res) => {});
+app.post("/submitblog", (req, res) => {
+  if (req.isAuthenticated()) {
+    console.log(req.body);
+  } 
+});
 
 app.get("/contact", (req, res) => {
   if (req.isAuthenticated()) {
     res.render("contact.ejs", { text: "hidden" });
   } else {
     res.render("contact.ejs");
+  }
+});
+
+app.get("/addnew", (req, res) => {
+  if (req.isAuthenticated()) {
+    res.render("addnew.ejs", { text: "hidden" });
+  } else {
+    res.render("index.ejs");
   }
 });
 

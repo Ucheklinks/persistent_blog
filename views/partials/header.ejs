@@ -32,6 +32,11 @@
 
         <div class="lg:flex justify-center hidden">
           <% if (locals.text){%>
+          <a href="/addnew"
+            ><button class="bg-black text-white px-1 rounded mr-7">
+              post blog
+            </button></a
+          >
           <a href="/logout" class="mr-7 ml-1">logout</a>
 
           <%}else{%>
@@ -97,6 +102,9 @@
           <a href="/about" class="m-auto"> <li class="my-7">about me</li></a>
 
           <% if (locals.text) {%>
+          <a href="/addnew" class="m-auto">
+            <li class="my-7">post blog</li></a
+          >
 
           <a href="/auth/google" class="m-auto">
             <li class="my-7">logout</li></a
