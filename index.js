@@ -5,7 +5,6 @@ import env from "dotenv";
 import passport from "passport";
 import GoogleStrategy from "passport-google-oauth2";
 import session from "express-session";
-import flowbite from "flowbite";
 
 env.config();
 
@@ -24,10 +23,28 @@ db.connect();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-let blog_title;
-let date;
+let blogTitle;
+let blogDate;
 let likes;
 let views;
+let blog_id;
+let blogPostArray = [];
+
+function changedText(text) {
+  return text
+    .trim()
+    .toLowerCase()
+    .replace(/ /g, "-")
+    .replace(/[^\w-]+/g, "");
+}
+
+function nonHyphen(text) {
+  return text.replace(/-/g, " ");
+}
+
+function capitalizeFirstLetter(val) {
+  return String(val).charAt(0).toUpperCase() + String(val).slice(1);
+}
 
 app.use(
   session({
@@ -43,15 +60,36 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get("/", (req, res) => {
+app.get("/", async (req, res) => {
+  let allBlogPosts;
+
   if (req.isAuthenticated()) {
-    blog_title = "";
-    date = "";
-    likes = "";
-    views = "";
-    res.render("signedin.ejs", { text: "hidden" });
+    res.redirect("/signedin");
   } else {
-    res.render("index.ejs");
+    try {
+      const result = await db.query("SELECT * FROM posts");
+
+      allBlogPosts = result.rows;
+
+      // console.log(result.rows);
+
+      for (let i = 0; i < allBlogPosts.length; i++) {
+        let hyphenBlogTitle = allBlogPosts[i].title;
+        allBlogPosts[i].title = capitalizeFirstLetter(allBlogPosts[i].title);
+        allBlogPosts[i].title = nonHyphen(allBlogPosts[i].title);
+        allBlogPosts[i].content = nonHyphen(allBlogPosts[i].content);
+        allBlogPosts[i] = { ...allBlogPosts[i], hyphenBlogTitle };
+      }
+
+      console.log("all blog posts below");
+      console.log(allBlogPosts);
+
+      res.render("index.ejs", {
+        totalBlogs: allBlogPosts,
+      });
+    } catch (err) {
+      console.log(err);
+    }
   }
 });
 
@@ -70,17 +108,22 @@ app.post("/submitblog", async (req, res) => {
   const d = new Date();
   if (req.isAuthenticated()) {
     let user = req.user;
+    let hypenatedBlogTitle = changedText(blogPost.blog_title);
+    let hypenatedBlogText = changedText(blogPost.blog_text);
+    let blogAuthorId = req.user.id;
 
     //     INSERT INTO table_name (column1, column2, column3, ...)
     // VALUES (value1, value2, value3, ...);
 
     try {
-     
-      
+      const result = await db.query(
+        "INSERT INTO posts (user_id,title,content) VALUES ($1, $2, $3)",
+        [blogAuthorId, hypenatedBlogTitle, hypenatedBlogText]
+      );
 
-      console.log(result.rows);
+      res.redirect("/");
     } catch (err) {
-      return err;
+      console.log(err);
     }
   } else {
     res.redirect("/");
@@ -92,6 +135,13 @@ app.get("/contact", (req, res) => {
     res.render("contact.ejs", { text: "hidden" });
   } else {
     res.render("contact.ejs");
+  }
+});
+
+app.get("/likes", (req, res) => {
+  if (req.isAuthenticated()) {
+  } else {
+    res.render("/");
   }
 });
 
@@ -119,9 +169,35 @@ app.get(
   })
 );
 
-app.get("/signedin", (req, res) => {
+app.get("/signedin", async (req, res) => {
+  let allBlogPosts;
   if (req.isAuthenticated()) {
-    res.render("signedin.ejs", { text: "hidden" });
+    try {
+      const result = await db.query("SELECT * FROM posts");
+
+      allBlogPosts = result.rows;
+
+      // console.log(result.rows);
+
+      for (let i = 0; i < allBlogPosts.length; i++) {
+        let hyphenBlogTitle = allBlogPosts[i].title;
+        allBlogPosts[i].title = capitalizeFirstLetter(allBlogPosts[i].title);
+        allBlogPosts[i].title = nonHyphen(allBlogPosts[i].title);
+        allBlogPosts[i].content = nonHyphen(allBlogPosts[i].content);
+        allBlogPosts[i] = { ...allBlogPosts[i], hyphenBlogTitle };
+      }
+
+      console.log("all blog posts below");
+      console.log(allBlogPosts);
+
+      res.render("signedin.ejs", {
+        totalBlogs: allBlogPosts,
+        text: "hidden",
+      });
+    } catch (err) {
+      console.log(err);
+    }
+    // res.render("signedin.ejs", { text: "hidden" });
   } else {
     res.redirect("/");
   }

@@ -33,7 +33,7 @@
         <div class="lg:flex justify-center hidden">
           <% if (locals.text){%>
           <a href="/addnew"
-            ><button class="bg-black text-white px-1 rounded mr-7">
+            ><button class="bg-black text-white px-1 rounded mr-7 cursor-pointer">
               post blog
             </button></a
           >
@@ -102,9 +102,7 @@
           <a href="/about" class="m-auto"> <li class="my-7">about me</li></a>
 
           <% if (locals.text) {%>
-          <a href="/addnew" class="m-auto">
-            <li class="my-7">post blog</li></a
-          >
+          <a href="/addnew" class="m-auto"> <li class="my-7">post blog</li></a>
 
           <a href="/auth/google" class="m-auto">
             <li class="my-7">logout</li></a
