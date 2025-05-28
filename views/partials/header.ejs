@@ -4,11 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Homepage</title>
-    <link href="./styling/output.css" rel="stylesheet" />
+    <link href="/styling/output.css" rel="stylesheet" />
     <style>
       @font-face {
         font-family: sigurdKnight;
-        src: url("font/sigurd/Sigurd-Knight.otf");
+        src: url("/font/sigurd/Sigurd-Knight.otf");
       }
     </style>
   </head>
@@ -42,7 +42,7 @@
           <%}else{%>
           <a href="/auth/google" class="flex items-center">
             <img
-              src="images/googlelogo.svg"
+              src="/images/googlelogo.svg"
               class="h-4 w-4 self-center"
               alt="google logo"
             />
@@ -128,20 +128,7 @@
         </ul>
       </div>
     </header>
-    <script>
-      const menu_btn = document.getElementById("menu_btn");
-      const mobile_menu = document.getElementById("mobile_menu");
-      const menu_bars = document.getElementById("menu_bars");
-      const menu_close = document.getElementById("menu_close");
-
-      menu_btn.addEventListener("click", () => {
-        mobile_menu.classList.toggle("hidden");
-        mobile_menu.classList.toggle("sticky");
-        menu_bars.classList.toggle("hidden");
-        menu_close.classList.toggle("hidden");
-      });
-    </script>
-  </body>
-</html>
+    
+ 
 
 <!-- create a function that hides hamburger menu on mobile and ipad -->

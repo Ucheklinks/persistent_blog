@@ -1,14 +1,15 @@
 <%- include("partials/header.ejs") %>
-
-    <div class="mt-15 tracking-wider">
+  <section class="px-8"> <div class="mt-15 tracking-wider">
       <h1
-        class="flex justify-center text-gray-500 lg:font-serif lg:text-8xl font-extralight mb-20"
+        class="flex justify-center text-gray-500 lg:font-serif font-extralight mb-20 text-justify lg:px-20 lg:text-lg "
       >
-        BLOG
+        Hi, I’m Uche, but most people call me "Klinks". I studied embedded systems and later found a real passion for full stack web development now as well as cross-platform development in the future.
+
+      This blog is where I share my journey through tech — the lessons, the projects, the struggles, and the wins. I write about what I’m learning, how I’m growing, and the things that matter to me in the world of IT.
       </h1>
     </div>
 
-    <div class="grid lg:grid-cols-3 lg:px-5 gap-6 px-6">
+    <div class="grid lg:grid-cols-3 lg:px-5 gap-6 ">
 
       <% if (locals.totalBlogs) {%>
        <% for (let i = 0; i < totalBlogs.length; i++) { %>
@@ -16,8 +17,15 @@
     <div
       class="border-1 rounded-3xl border-gray-200 flex flex-col h-[450px] items-center p-4 text-center"
     >
-      <a href="<%=locals.totalBlogs[i].hyphenBlogTitle%>"> <p class="italic"><%= locals.totalBlogs[i].title%></p></a>
-
+      <a href="/article/<%=locals.totalBlogs[i].hyphenBlogTitle%>"> <p class="italic"><%= locals.totalBlogs[i].title%></p></a>
+        
+      <div class="aspect-[16/16] overflow-hidden my-5">
+        <img
+          src="<%=locals.totalBlogs[i].dataUrl%>"
+          alt="Blog author image"
+          class="object-contain"
+        />
+      </div>
       <a href="" class="mt-auto text-base">
         <p><%= locals.totalBlogs[i].created_at%></p></a
       >
@@ -27,19 +35,9 @@
       <%}%>
      
     </div>
-    <%- include("partials/footer.ejs") %>
-    <script>
-      const menu_btn = document.getElementById("menu_btn");
-      const mobile_menu = document.getElementById("mobile_menu");
-      const menu_bars = document.getElementById("menu_bars");
-      const menu_close = document.getElementById("menu_close");
-
-      menu_btn.addEventListener("click", () => {
-        mobile_menu.classList.toggle("hidden");
-        menu_bars.classList.toggle("hidden");
-        menu_close.classList.toggle("hidden");
-      });
-    </script>
+  
+    </section>
+     <%- include("partials/footer.ejs") %>
   </body>
 </html>
 

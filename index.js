@@ -5,8 +5,10 @@ import env from "dotenv";
 import passport from "passport";
 import GoogleStrategy from "passport-google-oauth2";
 import session from "express-session";
+import multer from "multer";
 
 env.config();
+const upload = multer();
 
 const app = express();
 const port = 3000;
@@ -23,12 +25,7 @@ db.connect();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-let blogTitle;
-let blogDate;
-let likes;
-let views;
 let blog_id;
-let blogPostArray = [];
 
 function changedText(text) {
   return text
@@ -68,17 +65,21 @@ app.get("/", async (req, res) => {
   } else {
     try {
       const result = await db.query("SELECT * FROM posts");
-
       allBlogPosts = result.rows;
 
-      // console.log(result.rows);
+      let sliced_text = [];
 
       for (let i = 0; i < allBlogPosts.length; i++) {
+        const { image, image_type } = allBlogPosts[i];
+
+        const base64Image = image.toString("base64");
+        const dataUrl = `data:${image_type};base64,${base64Image}`;
         let hyphenBlogTitle = allBlogPosts[i].title;
         allBlogPosts[i].title = capitalizeFirstLetter(allBlogPosts[i].title);
         allBlogPosts[i].title = nonHyphen(allBlogPosts[i].title);
         allBlogPosts[i].content = nonHyphen(allBlogPosts[i].content);
-        allBlogPosts[i] = { ...allBlogPosts[i], hyphenBlogTitle };
+
+        allBlogPosts[i] = { ...allBlogPosts[i], hyphenBlogTitle, dataUrl };
       }
 
       console.log("all blog posts below");
@@ -101,29 +102,68 @@ app.get("/about", (req, res) => {
   }
 });
 
-app.post("/submitblog", async (req, res) => {
-  let blogPost = req.body;
-  console.log(blogPost);
+// app.post("/submitblog", async (req, res) => {
+//   let blogPost = req.body;
+//   console.log(blogPost);
+
+//   const d = new Date();
+//   if (req.isAuthenticated()) {
+//     let user = req.user;
+//     let hypenatedBlogTitle = changedText(blogPost.blog_title);
+//     let hypenatedBlogText = changedText(blogPost.blog_text);
+//     let blogAuthorId = req.user.id;
+
+//     //     INSERT INTO table_name (column1, column2, column3, ...)
+//     // VALUES (value1, value2, value3, ...);
+
+//     try {
+//       const result = await db.query(
+//         "INSERT INTO posts (user_id,title,content) VALUES ($1, $2, $3)",
+//         [blogAuthorId, hypenatedBlogTitle, hypenatedBlogText]
+//       );
+
+//       res.redirect("/");
+//     } catch (err) {
+//       console.log(err);
+//     }
+//   } else {
+//     res.redirect("/");
+//   }
+// });
+
+app.post("/submitblog", upload.single("file"), async (req, res) => {
+  const { blog_title, blog_text } = req.body;
+  const file = req.file;
+
+  console.log("req file and body");
+  console.log(req.file);
+  console.log(req.body);
 
   const d = new Date();
-  if (req.isAuthenticated()) {
-    let user = req.user;
-    let hypenatedBlogTitle = changedText(blogPost.blog_title);
-    let hypenatedBlogText = changedText(blogPost.blog_text);
-    let blogAuthorId = req.user.id;
 
-    //     INSERT INTO table_name (column1, column2, column3, ...)
-    // VALUES (value1, value2, value3, ...);
+  if (req.isAuthenticated()) {
+    const userId = req.user.id;
+    const hypenatedBlogTitle = changedText(blog_title);
+    const hypenatedBlogText = changedText(blog_text);
 
     try {
+      // Insert into DB including image
       const result = await db.query(
-        "INSERT INTO posts (user_id,title,content) VALUES ($1, $2, $3)",
-        [blogAuthorId, hypenatedBlogTitle, hypenatedBlogText]
+        "INSERT INTO posts (user_id, title, content, image, img_name, image_type) VALUES ($1, $2, $3, $4, $5, $6)",
+        [
+          userId,
+          hypenatedBlogTitle,
+          hypenatedBlogText,
+          file.buffer,
+          file.originalname,
+          file.mimetype,
+        ]
       );
 
       res.redirect("/");
     } catch (err) {
-      console.log(err);
+      console.error(err);
+      res.status(500).send("Database error");
     }
   } else {
     res.redirect("/");
@@ -138,18 +178,65 @@ app.get("/contact", (req, res) => {
   }
 });
 
-app.get("/likes", (req, res) => {
-  if (req.isAuthenticated()) {
-  } else {
-    res.render("/");
-  }
-});
+// later feature maybe
+// app.get("/likes", (req, res) => {
+//   if (req.isAuthenticated()) {
+//   } else {
+//     res.render("/");
+//   }
+// });
 
 app.get("/addnew", (req, res) => {
   if (req.isAuthenticated()) {
     res.render("addnew.ejs", { text: "hidden" });
   } else {
     res.redirect("/");
+  }
+});
+
+app.get("/article/:slug", async (req, res) => {
+  let allBlogPosts;
+
+  if (req.isAuthenticated()) {
+    const result = await db.query(`SELECT * FROM posts WHERE title = $1`, [
+      req.params.slug,
+    ]);
+
+    let blog_title = result.rows[0].title;
+    let blog_content = result.rows[0].content;
+    blog_title = nonHyphen(blog_title);
+    blog_title = capitalizeFirstLetter(blog_title);
+    blog_content = nonHyphen(blog_content);
+    blog_content = capitalizeFirstLetter(blog_content);
+    console.log(result.rows);
+
+    res.render("article.ejs", {
+      blogTitle: blog_title,
+      blogContent: blog_content,
+      text: "hidden",
+    });
+    // res.render("signedin.ejs", { text: "hidden" });
+  } else {
+    try {
+      const result = await db.query(`SELECT * FROM posts WHERE title = $1`, [
+        req.params.slug,
+      ]);
+
+      let blog_title = result.rows[0].title;
+      let blog_content = result.rows[0].content;
+      blog_title = nonHyphen(blog_title);
+      blog_title = capitalizeFirstLetter(blog_title);
+      blog_content = nonHyphen(blog_content);
+      blog_content = capitalizeFirstLetter(blog_content);
+      console.log(result.rows);
+
+      res.render("article.ejs", {
+        blogTitle: blog_title,
+        blogContent: blog_content,
+      });
+    } catch (err) {
+      console.log(err);
+    }
   }
 });
 
@@ -180,11 +267,16 @@ app.get("/signedin", async (req, res) => {
       // console.log(result.rows);
 
       for (let i = 0; i < allBlogPosts.length; i++) {
+        const { image, image_type } = allBlogPosts[i];
+
+        const base64Image = image.toString("base64");
+        const dataUrl = `data:${image_type};base64,${base64Image}`;
         let hyphenBlogTitle = allBlogPosts[i].title;
         allBlogPosts[i].title = capitalizeFirstLetter(allBlogPosts[i].title);
         allBlogPosts[i].title = nonHyphen(allBlogPosts[i].title);
         allBlogPosts[i].content = nonHyphen(allBlogPosts[i].content);
-        allBlogPosts[i] = { ...allBlogPosts[i], hyphenBlogTitle };
+
+        allBlogPosts[i] = { ...allBlogPosts[i], hyphenBlogTitle, dataUrl };
       }
 
       console.log("all blog posts below");
