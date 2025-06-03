@@ -1,12 +1,12 @@
 <%- include("partials/header.ejs") %> <% if (locals. blogTitle) {%>
-<section class="lg:px-20">
+<section class="lg:px-20 px-8">
   <div class="flex flex-col items-center tracking-wider mt-15">
     <h1 class="text-4xl mb-20 flex text-center"><%= locals.blogTitle%></h1>
     <p class="text-justify mb-10"><%=locals.blogContent%></p>
 
     <% if (locals.text){%>
     <div class="flex justify-center mb-5">
-      <a href="delete/<%= locals.blogTitle%>" class="mr-4 ">
+      <a href="/article/delete/<%= locals.hyphen_text%>" class="mr-4 ">
         <?xml version="1.0" encoding="utf-8"?><!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
         <svg
           class="w-5  ml-auto"
@@ -24,7 +24,7 @@
         </svg>
       </a>
 
-      <a href="">
+      <a href="/article/edit/<%= locals.hyphen_text%>">
         <?xml version="1.0" encoding="utf-8"?><!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
         <svg
           class="w-5 ml-auto "

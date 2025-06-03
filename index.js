@@ -12,6 +12,8 @@ const upload = multer();
 
 const app = express();
 const port = 3000;
+let naked_image_size;
+let hyphen_blog_title;
 
 const db = new pg.Client({
   user: process.env.PG_USER,
@@ -32,7 +34,7 @@ function changedText(text) {
     .trim()
     .toLowerCase()
     .replace(/ /g, "-")
-    .replace(/[^\w-]+/g, "");
+    .replace(/[^\w-.]+/g, "");
 }
 
 function nonHyphen(text) {
@@ -41,6 +43,10 @@ function nonHyphen(text) {
 
 function capitalizeFirstLetter(val) {
   return String(val).charAt(0).toUpperCase() + String(val).slice(1);
+}
+
+function LowercaseFirstLetter(val) {
+  return String(val).charAt(0).toLowerCase() + String(val).slice(1);
 }
 
 app.use(
@@ -82,9 +88,6 @@ app.get("/", async (req, res) => {
         allBlogPosts[i] = { ...allBlogPosts[i], hyphenBlogTitle, dataUrl };
       }
 
-      console.log("all blog posts below");
-      console.log(allBlogPosts);
-
       res.render("index.ejs", {
         totalBlogs: allBlogPosts,
       });
@@ -102,42 +105,9 @@ app.get("/about", (req, res) => {
   }
 });
 
-// app.post("/submitblog", async (req, res) => {
-//   let blogPost = req.body;
-//   console.log(blogPost);
-
-//   const d = new Date();
-//   if (req.isAuthenticated()) {
-//     let user = req.user;
-//     let hypenatedBlogTitle = changedText(blogPost.blog_title);
-//     let hypenatedBlogText = changedText(blogPost.blog_text);
-//     let blogAuthorId = req.user.id;
-
-//     //     INSERT INTO table_name (column1, column2, column3, ...)
-//     // VALUES (value1, value2, value3, ...);
-
-//     try {
-//       const result = await db.query(
-//         "INSERT INTO posts (user_id,title,content) VALUES ($1, $2, $3)",
-//         [blogAuthorId, hypenatedBlogTitle, hypenatedBlogText]
-//       );
-
-//       res.redirect("/");
-//     } catch (err) {
-//       console.log(err);
-//     }
-//   } else {
-//     res.redirect("/");
-//   }
-// });
-
 app.post("/submitblog", upload.single("file"), async (req, res) => {
   const { blog_title, blog_text } = req.body;
-  const file = req.file;
-
-  console.log("req file and body");
-  console.log(req.file);
-  console.log(req.body);
+  let file = req.file;
 
   const d = new Date();
 
@@ -168,6 +138,66 @@ app.post("/submitblog", upload.single("file"), async (req, res) => {
   } else {
     res.redirect("/");
   }
+});
+
+app.post("/submiteditedblog", upload.single("file"), async (req, res) => {
+  console.log(req.body);
+  const { blog_title, blog_text } = req.body;
+  let file = req.file;
+  if (file !== undefined) {
+    if (req.isAuthenticated()) {
+      const userId = req.user.id;
+      const hypenatedBlogTitle = changedText(blog_title);
+      const hypenatedBlogText = changedText(blog_text);
+
+      try {
+        const result = await db.query(
+          "UPDATE posts SET user_id = $1, title = $2, content = $3, image = $4, img_name = $5, image_type = $6 WHERE title = $7",
+          [
+            userId,
+            hypenatedBlogTitle,
+            hypenatedBlogText,
+            file.buffer,
+            file.originalname,
+            file.mimetype,
+            hyphen_blog_title,
+          ]
+        );
+
+        res.redirect("/");
+      } catch (err) {
+        console.error(err);
+        res.status(500).send("Database error");
+      }
+    } else {
+      res.redirect("/");
+    }
+  } else {
+    //     UPDATE table_name
+    // SET column1 = value1, column2 = value2, ...
+    // WHERE condition;
+    if (req.isAuthenticated()) {
+      const userId = req.user.id;
+      const hypenatedBlogTitle = changedText(blog_title);
+      const hypenatedBlogText = changedText(blog_text);
+
+      try {
+        // Insert into DB including image
+        const result = await db.query(
+          "UPDATE posts SET title = $1, content = $2 WHERE title = $3",
+          [hypenatedBlogTitle, hypenatedBlogText, hyphen_blog_title]
+        );
+
+        res.redirect("/");
+      } catch (err) {
+        console.error(err);
+        res.status(500).send("Database error");
+      }
+    } else {
+      res.redirect("/");
+    }
+  }
+
 });
 
 app.get("/contact", (req, res) => {
@@ -203,19 +233,19 @@ app.get("/article/:slug", async (req, res) => {
     ]);
 
     let blog_title = result.rows[0].title;
+    let hyphen_title = result.rows[0].title;
     let blog_content = result.rows[0].content;
     blog_title = nonHyphen(blog_title);
     blog_title = capitalizeFirstLetter(blog_title);
     blog_content = nonHyphen(blog_content);
     blog_content = capitalizeFirstLetter(blog_content);
-    console.log(result.rows);
 
     res.render("article.ejs", {
       blogTitle: blog_title,
       blogContent: blog_content,
+      hyphen_text: hyphen_title,
       text: "hidden",
     });
-    // res.render("signedin.ejs", { text: "hidden" });
   } else {
     try {
       const result = await db.query(`SELECT * FROM posts WHERE title = $1`, [
@@ -228,7 +258,6 @@ app.get("/article/:slug", async (req, res) => {
       blog_title = capitalizeFirstLetter(blog_title);
       blog_content = nonHyphen(blog_content);
       blog_content = capitalizeFirstLetter(blog_content);
-      console.log(result.rows);
 
       res.render("article.ejs", {
         blogTitle: blog_title,
@@ -237,6 +266,60 @@ app.get("/article/:slug", async (req, res) => {
     } catch (err) {
       console.log(err);
     }
+  }
+});
+
+// Cannot GET /article/delete/The%20rise%20of%20ai%20in%20everyday%20life
+
+app.get("/article/edit/:slug", async (req, res) => {
+  req.params.slug = LowercaseFirstLetter(req.params.slug);
+  req.params.slug = changedText(req.params.slug);
+
+  try {
+    const result_1 = await db.query(`SELECT * FROM posts WHERE title = $1`, [
+      req.params.slug,
+    ]);
+
+    naked_image_size = result_1.rows[0].image;
+
+    const result_2 = await db.query(`SELECT * FROM users WHERE id = $1`, [
+      result_1.rows[0].user_id,
+    ]);
+
+    let blog_title = result_1.rows[0].title;
+    hyphen_blog_title = result_1.rows[0].title;
+    let blog_text = result_1.rows[0].content;
+
+    blog_title = capitalizeFirstLetter(blog_title);
+    blog_title = nonHyphen(blog_title);
+    blog_text = capitalizeFirstLetter(blog_text);
+    blog_text = nonHyphen(blog_text);
+    let author_email = result_2.rows[0].email;
+    res.render("editblog.ejs", {
+      text: "hidden",
+      article_title: blog_title,
+      article_text: blog_text,
+      article_author: author_email,
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+app.get("/article/delete/:slug", async (req, res) => {
+  req.params.slug = LowercaseFirstLetter(req.params.slug);
+  req.params.slug = changedText(req.params.slug);
+
+  // DELETE FROM table_name WHERE condition;
+
+  try {
+    const result_1 = await db.query(`DELETE FROM posts WHERE title = $1`, [
+      req.params.slug,
+    ]);
+
+    res.redirect("/");
+  } catch (err) {
+    console.log(err);
   }
 });
 
@@ -264,8 +347,6 @@ app.get("/signedin", async (req, res) => {
 
       allBlogPosts = result.rows;
 
-      // console.log(result.rows);
-
       for (let i = 0; i < allBlogPosts.length; i++) {
         const { image, image_type } = allBlogPosts[i];
 
@@ -279,9 +360,6 @@ app.get("/signedin", async (req, res) => {
         allBlogPosts[i] = { ...allBlogPosts[i], hyphenBlogTitle, dataUrl };
       }
 
-      console.log("all blog posts below");
-      console.log(allBlogPosts);
-
       res.render("signedin.ejs", {
         totalBlogs: allBlogPosts,
         text: "hidden",
@@ -289,7 +367,6 @@ app.get("/signedin", async (req, res) => {
     } catch (err) {
       console.log(err);
     }
-    // res.render("signedin.ejs", { text: "hidden" });
   } else {
     res.redirect("/");
   }
@@ -345,5 +422,3 @@ passport.deserializeUser((user, cb) => {
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
-
-// https://www.awwwards.com/inspiration/blog-page-muse

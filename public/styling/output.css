@@ -8,7 +8,6 @@
     --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
       "Courier New", monospace;
-    --color-violet-50: oklch(96.9% 0.016 293.756);
     --color-gray-200: oklch(92.8% 0.006 264.531);
     --color-gray-400: oklch(70.7% 0.022 261.325);
     --color-gray-500: oklch(55.1% 0.027 264.364);
@@ -261,24 +260,8 @@
   .hidden {
     display: none;
   }
-  .aspect-8\/5 {
-    aspect-ratio: 8/5;
-  }
-  .aspect-9\/2 {
-    aspect-ratio: 9/2;
-  }
-  .aspect-9\/16 {
-    aspect-ratio: 9/16;
-  }
-  .aspect-\[9\/16\] {
-    aspect-ratio: 9/16;
-  }
   .aspect-\[16\/16\] {
     aspect-ratio: 16/16;
-  }
-  .size-fit {
-    width: fit-content;
-    height: fit-content;
   }
   .size-full {
     width: 100%;
@@ -293,20 +276,11 @@
   .h-\[450px\] {
     height: 450px;
   }
-  .max-h-\[400px\] {
-    max-height: 400px;
-  }
   .min-h-screen {
     min-height: 100vh;
   }
-  .w-1 {
-    width: calc(var(--spacing) * 1);
-  }
   .w-1\/2 {
     width: calc(1/2 * 100%);
-  }
-  .w-1\/3 {
-    width: calc(1/3 * 100%);
   }
   .w-1\/4 {
     width: calc(1/4 * 100%);
@@ -347,36 +321,17 @@
   .items-center {
     align-items: center;
   }
-  .items-start {
-    align-items: flex-start;
-  }
   .justify-between {
     justify-content: space-between;
   }
   .justify-center {
     justify-content: center;
   }
-  .justify-end {
-    justify-content: flex-end;
-  }
   .justify-evenly {
     justify-content: space-evenly;
   }
-  .gap-3 {
-    gap: calc(var(--spacing) * 3);
-  }
-  .gap-5 {
-    gap: calc(var(--spacing) * 5);
-  }
   .gap-6 {
     gap: calc(var(--spacing) * 6);
-  }
-  .space-x-2 {
-    :where(& > :not(:last-child)) {
-      --tw-space-x-reverse: 0;
-      margin-inline-start: calc(calc(var(--spacing) * 2) * var(--tw-space-x-reverse));
-      margin-inline-end: calc(calc(var(--spacing) * 2) * calc(1 - var(--tw-space-x-reverse)));
-    }
   }
   .self-center {
     align-self: center;
@@ -431,20 +386,11 @@
   .bg-gray-200 {
     background-color: var(--color-gray-200);
   }
-  .bg-gray-500 {
-    background-color: var(--color-gray-500);
-  }
   .bg-white {
     background-color: var(--color-white);
   }
   .object-contain {
     object-fit: contain;
-  }
-  .object-cover {
-    object-fit: cover;
-  }
-  .object-fill {
-    object-fit: fill;
   }
   .p-2 {
     padding: calc(var(--spacing) * 2);
@@ -476,9 +422,6 @@
   .py-1 {
     padding-block: calc(var(--spacing) * 1);
   }
-  .py-5 {
-    padding-block: calc(var(--spacing) * 5);
-  }
   .py-6 {
     padding-block: calc(var(--spacing) * 6);
   }
@@ -493,9 +436,6 @@
   }
   .text-justify {
     text-align: justify;
-  }
-  .text-right {
-    text-align: right;
   }
   .text-2xl {
     font-size: var(--text-2xl);
@@ -545,19 +485,9 @@
   .italic {
     font-style: italic;
   }
-  .file\:m-auto {
-    &::file-selector-button {
-      margin: auto;
-    }
-  }
   .file\:mr-4 {
     &::file-selector-button {
       margin-right: calc(var(--spacing) * 4);
-    }
-  }
-  .file\:mr-auto {
-    &::file-selector-button {
-      margin-right: auto;
     }
   }
   .file\:ml-auto {
@@ -565,25 +495,9 @@
       margin-left: auto;
     }
   }
-  .file\:self-end {
-    &::file-selector-button {
-      align-self: flex-end;
-    }
-  }
   .file\:rounded {
     &::file-selector-button {
       border-radius: 0.25rem;
-    }
-  }
-  .file\:rounded-full {
-    &::file-selector-button {
-      border-radius: calc(infinity * 1px);
-    }
-  }
-  .file\:border-0 {
-    &::file-selector-button {
-      border-style: var(--tw-border-style);
-      border-width: 0px;
     }
   }
   .file\:border-1 {
@@ -592,19 +506,9 @@
       border-width: 1px;
     }
   }
-  .file\:bg-violet-50 {
-    &::file-selector-button {
-      background-color: var(--color-violet-50);
-    }
-  }
   .file\:p-1 {
     &::file-selector-button {
       padding: calc(var(--spacing) * 1);
-    }
-  }
-  .file\:px-1 {
-    &::file-selector-button {
-      padding-inline: calc(var(--spacing) * 1);
     }
   }
   .sm\:mx-auto {
@@ -680,11 +584,6 @@
   .lg\:hidden {
     @media (width >= 64rem) {
       display: none;
-    }
-  }
-  .lg\:w-1\/2 {
-    @media (width >= 64rem) {
-      width: calc(1/2 * 100%);
     }
   }
   .lg\:w-1\/3 {
@@ -764,11 +663,6 @@
     }
   }
 }
-@property --tw-space-x-reverse {
-  syntax: "*";
-  inherits: false;
-  initial-value: 0;
-}
 @property --tw-border-style {
   syntax: "*";
   inherits: false;
@@ -785,7 +679,6 @@
 @layer properties {
   @supports ((-webkit-hyphens: none) and (not (margin-trim: inline))) or ((-moz-orient: inline) and (not (color:rgb(from red r g b)))) {
     *, ::before, ::after, ::backdrop {
-      --tw-space-x-reverse: 0;
       --tw-border-style: solid;
       --tw-font-weight: initial;
       --tw-tracking: initial;
