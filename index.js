@@ -6,6 +6,7 @@ import passport from "passport";
 import GoogleStrategy from "passport-google-oauth2";
 import session from "express-session";
 import multer from "multer";
+import convert from "heic-convert";
 
 env.config();
 const upload = multer();
@@ -108,6 +109,21 @@ app.get("/about", (req, res) => {
 app.post("/submitblog", upload.single("file"), async (req, res) => {
   const { blog_title, blog_text } = req.body;
   let file = req.file;
+  if (
+    file &&
+    (file.mimetype === "image/heic" || file.mimetype === "image/heif")
+  ) {
+    const jpegBuffer = await convert({
+      buffer: file.buffer, // original image bytes
+      format: "JPEG",
+      quality: 1, // 1 == 100 % in most libs
+    });
+
+    // overwrite Multer’s fields so the rest of the code can stay the same
+    file.buffer = jpegBuffer;
+    file.mimetype = "image/jpeg";
+    file.originalname = file.originalname.replace(/\.[^.]+$/, ".jpg");
+  }
 
   const d = new Date();
 
@@ -173,7 +189,6 @@ app.post("/submiteditedblog", upload.single("file"), async (req, res) => {
       res.redirect("/");
     }
   } else {
-   
     if (req.isAuthenticated()) {
       const userId = req.user.id;
       const hypenatedBlogTitle = changedText(blog_title);
@@ -195,7 +210,6 @@ app.post("/submiteditedblog", upload.single("file"), async (req, res) => {
       res.redirect("/");
     }
   }
-
 });
 
 app.get("/contact", (req, res) => {
