@@ -14,10 +14,14 @@
       <% if (locals.totalBlogs) {%>
        <% for (let i = 0; i < totalBlogs.length; i++) { %>
 
+         <a href="/article/<%=locals.totalBlogs[i].hyphenBlogTitle%>"> 
+
     <div
       class="border-1 rounded-3xl border-gray-200 flex flex-col h-[450px] items-center p-4 text-center"
     >
-      <a href="/article/<%=locals.totalBlogs[i].hyphenBlogTitle%>"> <p class="italic"><%= locals.totalBlogs[i].title%></p></a>
+     <p class="italic"><%= locals.totalBlogs[i].title%></p>
+
+        
         
       <div class="aspect-[16/16] overflow-hidden my-5">
         <img
@@ -30,6 +34,8 @@
         <p><%= locals.totalBlogs[i].created_at%></p></a
       >
     </div>
+         </a>
+
     <% } %>
 
       <%}%>
