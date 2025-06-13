@@ -5,7 +5,7 @@
       >
         Hi, I’m Uche, but most people call me "Klinks". I studied embedded systems and later found a real passion for full stack web development now as well as cross-platform development in the future.
 
-      This blog is where I share my journey through tech — the lessons, the projects, the struggles, and the wins. I write about what I’m learning, how I’m growing, and the things that matter to me in the world of IT.
+      This blog is where I share my journey through tech — the lessons, the projects, the struggles, and the wins. I write about what I’m learning, how I’m growing, and the things that matter to me in the world of IT. Kindly note that this blog is still under construction.
       </h1>
     </div>
 
@@ -14,14 +14,10 @@
       <% if (locals.totalBlogs) {%>
        <% for (let i = 0; i < totalBlogs.length; i++) { %>
 
-         <a href="/article/<%=locals.totalBlogs[i].hyphenBlogTitle%>"> 
-
     <div
       class="border-1 rounded-3xl border-gray-200 flex flex-col h-[450px] items-center p-4 text-center"
     >
-     <p class="italic"><%= locals.totalBlogs[i].title%></p>
-
-        
+      <a href="/article/<%=locals.totalBlogs[i].hyphenBlogTitle%>"> <p class="italic"><%= locals.totalBlogs[i].title%></p></a>
         
       <div class="aspect-[16/16] overflow-hidden my-5">
         <img
@@ -34,8 +30,6 @@
         <p><%= locals.totalBlogs[i].created_at%></p></a
       >
     </div>
-         </a>
-
     <% } %>
 
       <%}%>
