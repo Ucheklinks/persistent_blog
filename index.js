@@ -173,9 +173,7 @@ app.post("/submiteditedblog", upload.single("file"), async (req, res) => {
       res.redirect("/");
     }
   } else {
-    //     UPDATE table_name
-    // SET column1 = value1, column2 = value2, ...
-    // WHERE condition;
+   
     if (req.isAuthenticated()) {
       const userId = req.user.id;
       const hypenatedBlogTitle = changedText(blog_title);
@@ -388,7 +386,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "https:/ucheklinks.com/auth/google/signedin",
+      callbackURL: "https://ucheklinks.com/auth/google/signedin",
       userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
     },
     async (accessToken, refreshToken, profile, cb) => {
