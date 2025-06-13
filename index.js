@@ -165,7 +165,7 @@ app.post("/submiteditedblog", upload.single("file"), async (req, res) => {
     if (req.isAuthenticated()) {
       const userId = req.user.id;
       const hypenatedBlogTitle = changedText(blog_title);
-      const hypenatedBlogText = changedText(blog_text);
+      // const hypenatedBlogText = changedText(blog_text);
 
       try {
         const result = await db.query(
@@ -173,7 +173,7 @@ app.post("/submiteditedblog", upload.single("file"), async (req, res) => {
           [
             userId,
             hypenatedBlogTitle,
-            hypenatedBlogText,
+            blog_text,
             file.buffer,
             file.originalname,
             file.mimetype,
