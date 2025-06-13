@@ -193,13 +193,13 @@ app.post("/submiteditedblog", upload.single("file"), async (req, res) => {
     if (req.isAuthenticated()) {
       const userId = req.user.id;
       const hypenatedBlogTitle = changedText(blog_title);
-      const hypenatedBlogText = changedText(blog_text);
+      // const hypenatedBlogText = changedText(blog_text);
 
       try {
         // Insert into DB including image
         const result = await db.query(
           "UPDATE posts SET title = $1, content = $2 WHERE title = $3",
-          [hypenatedBlogTitle, hypenatedBlogText, hyphen_blog_title]
+          [hypenatedBlogTitle, blog_text, hyphen_blog_title]
         );
 
         res.redirect("/");
